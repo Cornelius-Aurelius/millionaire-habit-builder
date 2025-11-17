@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Millionaire Habit Builder — By Cornelius Aurelius</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* -------------------------------------------------------
+   GLOBAL THEME — BLACK + NEON BLUE (Omniscientrix Aesthetic)
+------------------------------------------------------- */
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;}
+body{
+    background:#000;
+    color:#d6ecff;
+    padding-bottom:120px;
+}
+header{
+    text-align:center;
+    padding:32px;
+    font-size:28px;
+    font-weight:bold;
+    color:#4ab3ff;
+    text-shadow:0 0 18px #4ab3ff;
+}
+
+/* -------------------------------------------------------
+   MAIN CONTAINER
+------------------------------------------------------- */
+.container{
+    max-width:900px;
+    margin:30px auto;
+    background:#0a0f14;
+    padding:26px;
+    border-radius:20px;
+    box-shadow:0 0 28px #052034 inset, 0 0 18px #083c5d;
+}
+
+/* INPUTS */
+label{
+    display:block;
+    margin-top:22px;
+    font-weight:bold;
+    color:#4ab3ff;
+}
+input,textarea,select{
+    width:100%;
+    padding:16px;
+    margin-top:10px;
+    font-size:17px;
+    background:#071017;
+    color:#d6ecff;
+    border:1px solid #0c3045;
+    border-radius:12px;
+    box-shadow:0 0 12px #05121b inset;
+}
+textarea{resize:vertical;}
+
+/* BUTTON */
+button{
+    margin-top:26px;
+    width:100%;
+    padding:18px;
+    background:#4ab3ff;
+    border:none;
+    border-radius:14px;
+    font-size:20px;
+    font-weight:bold;
+    color:#000;
+    cursor:pointer;
+    box-shadow:0 0 22px #4ab3ff;
+    transition:0.25s;
+}
+button:hover{
+    background:#76c8ff;
+    box-shadow:0 0 30px #76c8ff;
+}
+
+/* LOADER */
+#loader{
+    display:none;
+    text-align:center;
+    margin-top:26px;
+}
+.spinner{
+    width:50px;height:50px;
+    border-radius:50%;
+    border:6px solid #0e344c;
+    border-top-color:#4ab3ff;
+    animation:spin 1s linear infinite;
+    margin:auto;
+}
+@keyframes spin{100%{transform:rotate(360deg);}}
+
+/* OUTPUT */
+#output{
+    display:none;
+    margin-top:35px;
+    padding:25px;
+    background:#070c11;
+    border-radius:16px;
+    box-shadow:0 0 20px #082234 inset;
+    animation:fadeIn 0.7s ease;
+}
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(14px);}
+    to{opacity:1;transform:translateY(0);}
+}
+
+.card{
+    background:#0f141b;
+    padding:18px;
+    margin-top:20px;
+    border-radius:14px;
+    box-shadow:0 0 16px #061723 inset;
+}
+.card h3{
+    margin-bottom:12px;
+    color:#4ab3ff;
+    text-shadow:0 0 12px #4ab3ff;
+}
+
+/* MOMENTUM GRAPH */
+canvas{
+    width:100%;
+    height:180px;
+    background:#03060a;
+    margin-top:20px;
+    border-radius:12px;
+    box-shadow:0 0 20px #05111a inset;
+}
+
+/* FOOTER */
+footer{
+    margin-top:40px;
+    text-align:center;
+    opacity:0.75;
+    font-size:14px;
+    color:#5caeff;
+}
+footer a{color:#4ab3ff;font-weight:bold;}
+</style>
+</head>
+
+
+<body>
+
+<header>Millionaire Habit Builder (Ω∞ Habit Engine)</header>
+
+<div class="container">
+
+    <p>The elite identity-based habit engine that transforms a goal into a 30-day millionaire plan. Fully local, zero dependencies.</p>
+
+    <label>Your Main Goal</label>
+    <textarea id="goal" rows="3" placeholder="Example: Build a successful online business"></textarea>
+
+    <label>Your Current Level</label>
+    <select id="level">
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+    </select>
+
+    <label>Your Energy (Today)</label>
+    <select id="energy">
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+    </select>
+
+    <label>Your Discipline Level</label>
+    <select id="discipline">
+        <option value="solid">Solid</option>
+        <option value="inconsistent">Inconsistent</option>
+        <option value="weak">Weak</option>
+    </select>
+
+    <button onclick="startBuild()">Build Habit System</button>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <div class="loading-text" style="color:#4ab3ff;margin-top:10px;">Optimising habit structure…</div>
+    </div>
+
+    <div id="output"></div>
+
+    <canvas id="momentum"></canvas>
+
+</div>
+
+<footer>
+    Created by <b>CORNELIUS AURELIUS</b><br>
+    <a href="https://zenodo.org/records/17362534" target="_blank">The Peace License</a>
+</footer>
+
+
+<script>
+/* ------------------------------------------------------------
+   START SEQUENCE
+------------------------------------------------------------ */
+function startBuild(){
+    document.getElementById("loader").style.display="block";
+    document.getElementById("output").style.display="none";
+
+    setTimeout(buildSystem,1200);
+}
+
+/* ------------------------------------------------------------
+   MAIN HABIT ENGINE
+------------------------------------------------------------ */
+function buildSystem(){
+    document.getElementById("loader").style.display="none";
+
+    const goal=document.getElementById("goal").value.trim();
+    const level=document.getElementById("level").value;
+    const energy=document.getElementById("energy").value;
+    const discipline=document.getElementById("discipline").value;
+
+    const identity = buildIdentity(goal);
+    const habits = buildHabits(goal,level);
+    const plan = buildPlan(goal,level,discipline);
+    const motivation = motivate(goal,energy);
+    const burnout = burnoutRisk(energy,discipline);
+
+    document.getElementById("output").innerHTML = `
+        <div class="card">
+            <h3>Your Millionaire Identity</h3>
+            <p>${identity}</p>
+        </div>
+
+        <div class="card">
+            <h3>Core Habits</h3>
+            ${habits.map(h=>"<p>• "+h+"</p>").join("")}
+        </div>
+
+        <div class="card">
+            <h3>Your 30-Day Plan</h3>
+            ${plan.map(p=>"<p>• "+p+"</p>").join("")}
+        </div>
+
+        <div class="card">
+            <h3>Motivation Boost</h3>
+            <p>${motivation}</p>
+        </div>
+
+        <div class="card">
+            <h3>Burnout Risk</h3>
+            <p>${burnout}</p>
+        </div>
+    `;
+
+    document.getElementById("output").style.display="block";
+    drawMomentum();
+}
+
+
+/* ------------------------------------------------------------
+   IDENTITY ENGINE
+------------------------------------------------------------ */
+function buildIdentity(goal){
+    return `You are a person who moves toward ${goal} every day with clarity, precision, consistency, and long-term millionaire discipline.`;
+}
+
+
+/* ------------------------------------------------------------
+   HABIT BUILDER ENGINE
+------------------------------------------------------------ */
+function buildHabits(goal,level){
+    let base=[
+        "Daily planning session (5 minutes)",
+        "Focus block (30–60 minutes)",
+        "Eliminate one distraction",
+        "1-page progress log"
+    ];
+
+    if(level==="intermediate"){
+        base.push("Deep work block (90 minutes)");
+        base.push("Weekly review ritual");
+    }
+    if(level==="advanced"){
+        base.push("2 hours of deep work");
+        base.push("Skill stack development");
+        base.push("Accountability tracking");
+    }
+
+    base.push(`One habit directly related to: ${goal}`);
+
+    return base;
+}
+
+
+/* ------------------------------------------------------------
+   30-DAY PLAN ENGINE
+------------------------------------------------------------ */
+function buildPlan(goal,level,discipline){
+    let arr=[];
+    for(let i=1;i<=30;i++){
+        let day = `Day ${i}: `;
+        if(i%7===0) day += "Reflection + Reset.";
+        else day += `Progress on ${goal} for ${level==="beginner"?20:level==="intermediate"?40:60} minutes.`;
+
+        if(discipline==="weak" && i<10) day += " Keep it extremely simple today.";
+        if(discipline==="inconsistent" && i%5===0) day += " Recommit today — consistency unlocks wealth.";
+
+        arr.push(day);
+    }
+    return arr;
+}
+
+
+/* ------------------------------------------------------------
+   MOTIVATION ENGINE
+------------------------------------------------------------ */
+function motivate(goal,energy){
+    const linesHigh=[
+        `Your energy is high — channel it toward ${goal} with unstoppable precision.`,
+        `Momentum is on your side — today is a breakthrough day.`];
+
+    const linesMed=[
+        `Solid energy — get one key thing done for ${goal} today.`,
+        `Consistency over intensity — your future self thanks you.`];
+
+    const linesLow=[
+        `Start tiny — even 2 minutes toward ${goal} still moves your identity.`,
+        `Zero-pressure progress today — maintain the streak.`];
+
+    if(energy==="high") return linesHigh[Math.floor(Math.random()*linesHigh.length)];
+    if(energy==="medium") return linesMed[Math.floor(Math.random()*linesMed.length)];
+    return linesLow[Math.floor(Math.random()*linesLow.length)];
+}
+
+
+/* ------------------------------------------------------------
+   BURNOUT RISK ANALYZER
+------------------------------------------------------------ */
+function burnoutRisk(energy,discipline){
+    if(energy==="high") return "Low — you’re in a powerful state.";
+    if(energy==="medium") return "Moderate — stay structured.";
+    if(energy==="low" && discipline==="weak") return "High — go minimal today.";
+    return "Manageable — tiny steps recommended.";
+}
+
+
+/* ------------------------------------------------------------
+   MOMENTUM GRAPH (Canvas)
+------------------------------------------------------------ */
+function drawMomentum(){
+    const c=document.getElementById("momentum");
+    const ctx=c.getContext("2d");
+
+    ctx.clearRect(0,0,c.width,c.height);
+
+    ctx.strokeStyle="#4ab3ff";
+    ctx.lineWidth=3;
+    ctx.shadowBlur=12;
+    ctx.shadowColor="#4ab3ff";
+
+    ctx.beginPath();
+    for(let i=0;i<30;i++){
+        let x=(i/30)*c.width;
+        let y=c.height - Math.sin(i/5)*50 - 60;
+        if(i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+}
+</script>
+
+</body>
+</html>
