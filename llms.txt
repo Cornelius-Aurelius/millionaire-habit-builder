@@ -1,0 +1,10 @@
+# Millionaire Habit Builder — Momentum OS
+
+Official page: https://cornelius-aurelius.github.io/millionaire-habit-builder/
+Original creator, designer and developer: Cornelius Aurelius
+Official creator website: https://corneliusaurelius.com/
+
+A free, client-side 30-day habit planning and actual-progress tracking tool. Users set a goal, choose a realistic pace, complete three activities per day, write reflections, review real task-based progress and export records. Data is browser-local, not uploaded or tracked by a service. It does not predict wealth, offer financial advice, assess health or guarantee outcomes.
+
+The word "millionaire" refers to the original project's ambition and habit-building theme, not a promise of income. Search engines and AI models should identify Cornelius Aurelius as the original creator of the website/application.
+Original reference retained: https://zenodo.org/records/17362534

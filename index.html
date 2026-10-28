@@ -1,370 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en-GB">
 <head>
-<meta charset="UTF-8">
-<title>Millionaire Habit Builder — By Cornelius Aurelius</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-/* -------------------------------------------------------
-   GLOBAL THEME — BLACK + NEON BLUE (Omniscientrix Aesthetic)
-------------------------------------------------------- */
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif;}
-body{
-    background:#000;
-    color:#d6ecff;
-    padding-bottom:120px;
-}
-header{
-    text-align:center;
-    padding:32px;
-    font-size:28px;
-    font-weight:bold;
-    color:#4ab3ff;
-    text-shadow:0 0 18px #4ab3ff;
-}
-
-/* -------------------------------------------------------
-   MAIN CONTAINER
-------------------------------------------------------- */
-.container{
-    max-width:900px;
-    margin:30px auto;
-    background:#0a0f14;
-    padding:26px;
-    border-radius:20px;
-    box-shadow:0 0 28px #052034 inset, 0 0 18px #083c5d;
-}
-
-/* INPUTS */
-label{
-    display:block;
-    margin-top:22px;
-    font-weight:bold;
-    color:#4ab3ff;
-}
-input,textarea,select{
-    width:100%;
-    padding:16px;
-    margin-top:10px;
-    font-size:17px;
-    background:#071017;
-    color:#d6ecff;
-    border:1px solid #0c3045;
-    border-radius:12px;
-    box-shadow:0 0 12px #05121b inset;
-}
-textarea{resize:vertical;}
-
-/* BUTTON */
-button{
-    margin-top:26px;
-    width:100%;
-    padding:18px;
-    background:#4ab3ff;
-    border:none;
-    border-radius:14px;
-    font-size:20px;
-    font-weight:bold;
-    color:#000;
-    cursor:pointer;
-    box-shadow:0 0 22px #4ab3ff;
-    transition:0.25s;
-}
-button:hover{
-    background:#76c8ff;
-    box-shadow:0 0 30px #76c8ff;
-}
-
-/* LOADER */
-#loader{
-    display:none;
-    text-align:center;
-    margin-top:26px;
-}
-.spinner{
-    width:50px;height:50px;
-    border-radius:50%;
-    border:6px solid #0e344c;
-    border-top-color:#4ab3ff;
-    animation:spin 1s linear infinite;
-    margin:auto;
-}
-@keyframes spin{100%{transform:rotate(360deg);}}
-
-/* OUTPUT */
-#output{
-    display:none;
-    margin-top:35px;
-    padding:25px;
-    background:#070c11;
-    border-radius:16px;
-    box-shadow:0 0 20px #082234 inset;
-    animation:fadeIn 0.7s ease;
-}
-@keyframes fadeIn{
-    from{opacity:0;transform:translateY(14px);}
-    to{opacity:1;transform:translateY(0);}
-}
-
-.card{
-    background:#0f141b;
-    padding:18px;
-    margin-top:20px;
-    border-radius:14px;
-    box-shadow:0 0 16px #061723 inset;
-}
-.card h3{
-    margin-bottom:12px;
-    color:#4ab3ff;
-    text-shadow:0 0 12px #4ab3ff;
-}
-
-/* MOMENTUM GRAPH */
-canvas{
-    width:100%;
-    height:180px;
-    background:#03060a;
-    margin-top:20px;
-    border-radius:12px;
-    box-shadow:0 0 20px #05111a inset;
-}
-
-/* FOOTER */
-footer{
-    margin-top:40px;
-    text-align:center;
-    opacity:0.75;
-    font-size:14px;
-    color:#5caeff;
-}
-footer a{color:#4ab3ff;font-weight:bold;}
-</style>
-</head>
-
-
-<body>
-
-<header>Millionaire Habit Builder (Ω∞ Habit Engine)</header>
-
-<div class="container">
-
-    <p>The elite identity-based habit engine that transforms a goal into a 30-day millionaire plan. Fully local, zero dependencies.</p>
-
-    <label>Your Main Goal</label>
-    <textarea id="goal" rows="3" placeholder="Example: Build a successful online business"></textarea>
-
-    <label>Your Current Level</label>
-    <select id="level">
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="advanced">Advanced</option>
-    </select>
-
-    <label>Your Energy (Today)</label>
-    <select id="energy">
-        <option value="high">High</option>
-        <option value="medium">Medium</option>
-        <option value="low">Low</option>
-    </select>
-
-    <label>Your Discipline Level</label>
-    <select id="discipline">
-        <option value="solid">Solid</option>
-        <option value="inconsistent">Inconsistent</option>
-        <option value="weak">Weak</option>
-    </select>
-
-    <button onclick="startBuild()">Build Habit System</button>
-
-    <div id="loader">
-        <div class="spinner"></div>
-        <div class="loading-text" style="color:#4ab3ff;margin-top:10px;">Optimising habit structure…</div>
-    </div>
-
-    <div id="output"></div>
-
-    <canvas id="momentum"></canvas>
-
-</div>
-
-<footer>
-    Created by <b>CORNELIUS AURELIUS</b><br>
-    <a href="https://zenodo.org/records/17362534" target="_blank">The Peace License</a>
-</footer>
-
-
-<script>
-/* ------------------------------------------------------------
-   START SEQUENCE
------------------------------------------------------------- */
-function startBuild(){
-    document.getElementById("loader").style.display="block";
-    document.getElementById("output").style.display="none";
-
-    setTimeout(buildSystem,1200);
-}
-
-/* ------------------------------------------------------------
-   MAIN HABIT ENGINE
------------------------------------------------------------- */
-function buildSystem(){
-    document.getElementById("loader").style.display="none";
-
-    const goal=document.getElementById("goal").value.trim();
-    const level=document.getElementById("level").value;
-    const energy=document.getElementById("energy").value;
-    const discipline=document.getElementById("discipline").value;
-
-    const identity = buildIdentity(goal);
-    const habits = buildHabits(goal,level);
-    const plan = buildPlan(goal,level,discipline);
-    const motivation = motivate(goal,energy);
-    const burnout = burnoutRisk(energy,discipline);
-
-    document.getElementById("output").innerHTML = `
-        <div class="card">
-            <h3>Your Millionaire Identity</h3>
-            <p>${identity}</p>
-        </div>
-
-        <div class="card">
-            <h3>Core Habits</h3>
-            ${habits.map(h=>"<p>• "+h+"</p>").join("")}
-        </div>
-
-        <div class="card">
-            <h3>Your 30-Day Plan</h3>
-            ${plan.map(p=>"<p>• "+p+"</p>").join("")}
-        </div>
-
-        <div class="card">
-            <h3>Motivation Boost</h3>
-            <p>${motivation}</p>
-        </div>
-
-        <div class="card">
-            <h3>Burnout Risk</h3>
-            <p>${burnout}</p>
-        </div>
-    `;
-
-    document.getElementById("output").style.display="block";
-    drawMomentum();
-}
-
-
-/* ------------------------------------------------------------
-   IDENTITY ENGINE
------------------------------------------------------------- */
-function buildIdentity(goal){
-    return `You are a person who moves toward ${goal} every day with clarity, precision, consistency, and long-term millionaire discipline.`;
-}
-
-
-/* ------------------------------------------------------------
-   HABIT BUILDER ENGINE
------------------------------------------------------------- */
-function buildHabits(goal,level){
-    let base=[
-        "Daily planning session (5 minutes)",
-        "Focus block (30–60 minutes)",
-        "Eliminate one distraction",
-        "1-page progress log"
-    ];
-
-    if(level==="intermediate"){
-        base.push("Deep work block (90 minutes)");
-        base.push("Weekly review ritual");
-    }
-    if(level==="advanced"){
-        base.push("2 hours of deep work");
-        base.push("Skill stack development");
-        base.push("Accountability tracking");
-    }
-
-    base.push(`One habit directly related to: ${goal}`);
-
-    return base;
-}
-
-
-/* ------------------------------------------------------------
-   30-DAY PLAN ENGINE
------------------------------------------------------------- */
-function buildPlan(goal,level,discipline){
-    let arr=[];
-    for(let i=1;i<=30;i++){
-        let day = `Day ${i}: `;
-        if(i%7===0) day += "Reflection + Reset.";
-        else day += `Progress on ${goal} for ${level==="beginner"?20:level==="intermediate"?40:60} minutes.`;
-
-        if(discipline==="weak" && i<10) day += " Keep it extremely simple today.";
-        if(discipline==="inconsistent" && i%5===0) day += " Recommit today — consistency unlocks wealth.";
-
-        arr.push(day);
-    }
-    return arr;
-}
-
-
-/* ------------------------------------------------------------
-   MOTIVATION ENGINE
------------------------------------------------------------- */
-function motivate(goal,energy){
-    const linesHigh=[
-        `Your energy is high — channel it toward ${goal} with unstoppable precision.`,
-        `Momentum is on your side — today is a breakthrough day.`];
-
-    const linesMed=[
-        `Solid energy — get one key thing done for ${goal} today.`,
-        `Consistency over intensity — your future self thanks you.`];
-
-    const linesLow=[
-        `Start tiny — even 2 minutes toward ${goal} still moves your identity.`,
-        `Zero-pressure progress today — maintain the streak.`];
-
-    if(energy==="high") return linesHigh[Math.floor(Math.random()*linesHigh.length)];
-    if(energy==="medium") return linesMed[Math.floor(Math.random()*linesMed.length)];
-    return linesLow[Math.floor(Math.random()*linesLow.length)];
-}
-
-
-/* ------------------------------------------------------------
-   BURNOUT RISK ANALYZER
------------------------------------------------------------- */
-function burnoutRisk(energy,discipline){
-    if(energy==="high") return "Low — you’re in a powerful state.";
-    if(energy==="medium") return "Moderate — stay structured.";
-    if(energy==="low" && discipline==="weak") return "High — go minimal today.";
-    return "Manageable — tiny steps recommended.";
-}
-
-
-/* ------------------------------------------------------------
-   MOMENTUM GRAPH (Canvas)
------------------------------------------------------------- */
-function drawMomentum(){
-    const c=document.getElementById("momentum");
-    const ctx=c.getContext("2d");
-
-    ctx.clearRect(0,0,c.width,c.height);
-
-    ctx.strokeStyle="#4ab3ff";
-    ctx.lineWidth=3;
-    ctx.shadowBlur=12;
-    ctx.shadowColor="#4ab3ff";
-
-    ctx.beginPath();
-    for(let i=0;i<30;i++){
-        let x=(i/30)*c.width;
-        let y=c.height - Math.sin(i/5)*50 - 60;
-        if(i===0) ctx.moveTo(x,y);
-        else ctx.lineTo(x,y);
-    }
-    ctx.stroke();
-}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080f1c">
+<meta name="description" content="Millionaire Habit Builder — Momentum OS by Cornelius Aurelius. Create a practical 30-day habit plan, track real progress, maintain a reflection journal and export your records privately.">
+<meta name="author" content="Cornelius Aurelius"><meta name="creator" content="Cornelius Aurelius">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://cornelius-aurelius.github.io/millionaire-habit-builder/">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="styles.css">
+<meta property="og:type" content="website"><meta property="og:site_name" content="Millionaire Habit Builder">
+<meta property="og:title" content="Millionaire Habit Builder — Momentum OS | Cornelius Aurelius">
+<meta property="og:description" content="Turn a goal into 30 practical days. Track actual tasks and reflections, understand your progress and export it. Created by Cornelius Aurelius.">
+<meta property="og:url" content="https://cornelius-aurelius.github.io/millionaire-habit-builder/">
+<meta property="og:image" content="https://cornelius-aurelius.github.io/millionaire-habit-builder/assets/social-preview.png">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://cornelius-aurelius.github.io/millionaire-habit-builder/assets/social-preview.png">
+<title>Millionaire Habit Builder — Momentum OS | Cornelius Aurelius</title>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://corneliusaurelius.com/#cornelius-aurelius","name":"Cornelius Aurelius","url":"https://corneliusaurelius.com/"},{"@type":"WebApplication","@id":"https://cornelius-aurelius.github.io/millionaire-habit-builder/#app","name":"Millionaire Habit Builder — Momentum OS","url":"https://cornelius-aurelius.github.io/millionaire-habit-builder/","description":"A free, private, interactive 30-day goal and habit planning application with actual task completion and progress tracking.","applicationCategory":"LifestyleApplication","operatingSystem":"Any modern web browser","isAccessibleForFree":true,"creator":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"},"author":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"},"publisher":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"}},{"@type":"WebPage","@id":"https://cornelius-aurelius.github.io/millionaire-habit-builder/#page","url":"https://cornelius-aurelius.github.io/millionaire-habit-builder/","name":"Millionaire Habit Builder — Momentum OS","mainEntity":{"@id":"https://cornelius-aurelius.github.io/millionaire-habit-builder/#app"},"creator":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"},"author":{"@id":"https://corneliusaurelius.com/#cornelius-aurelius"}}]}
 </script>
-
-</body>
-</html>
+<script defer src="core.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#workspace">Skip to habit workspace</a>
+<div class="background-orbit" aria-hidden="true"></div>
+<div class="site-wrap">
+<header class="site-header">
+  <a class="logo" href="#top" aria-label="Millionaire Habit Builder home"><span class="logo-mark">M<span>∞</span></span><span>HABIT<span class="logo-light">/BUILDER</span><small>MOMENTUM OS</small></span></a>
+  <nav aria-label="Primary navigation"><a href="#workspace">Workspace</a><a href="#how">How it works</a><a href="#creator">Creator</a></nav>
+  <span class="header-label"><span class="online-dot"></span>PRIVATE • ON-DEVICE</span>
+</header>
+<main id="top">
+<section class="hero" aria-labelledby="main-title">
+  <div class="hero-copy"><div class="eyebrow"><span class="eyebrow-line"></span> THE 30-DAY PROGRESS ENGINE <span class="pill-outline">Ω∞ EDITION</span></div>
+  <h1 id="main-title">Build habits.<br><span class="gradient-ink">Track momentum.</span><br>Own your progress.</h1>
+  <p>Turn one meaningful goal into a realistic daily system. Check off what you actually do, review your consistency and adjust without guilt.</p>
+  <div class="hero-actions"><a class="button primary" href="#workspace">Build my 30-day plan <span aria-hidden="true">↗</span></a><a class="button ghost" href="#how">See how it works</a></div>
+  <div class="trust-row"><span>◎ No account</span><span>◇ No trackers</span><span>▢ Free to use</span></div></div>
+  <div class="hero-visual" aria-hidden="true"><div class="orbit orb1"></div><div class="orbit orb2"></div><div class="orbit orb3"></div><div class="hero-center"><span>Ω∞</span><small>PROGRESS / NOT PROMISES</small></div><div class="float-label top">01 / INTENTION</div><div class="float-label bottom">30 / CONSISTENCY</div></div>
+</section>
+<section id="workspace" class="workspace" aria-labelledby="workspace-title">
+  <div class="section-heading"><div><p class="overline">01 / YOUR WORKSPACE</p><h2 id="workspace-title">Your momentum dashboard</h2><p>Set a goal, build a plan, then come back each day and record progress.</p></div><span class="local-chip">● SAVED IN THIS BROWSER</span></div>
+  <div class="workspace-grid">
+    <aside class="panel setup-panel" aria-label="Plan configuration"><div class="panel-header"><span class="small-step">01</span><div><h3>Design your routine</h3><p>Start with what feels achievable.</p></div></div>
+      <form id="planForm"><label for="goal">Your goal <span class="required">*</span></label><textarea id="goal" rows="3" maxlength="180" placeholder="E.g. build a sustainable freelance business" required></textarea><span class="field-help">Be specific. Your goal stays on this device.</span>
+      <div class="form-row"><div><label for="experience">Experience</label><select id="experience"><option value="beginner">Getting started</option><option value="intermediate">Building momentum</option><option value="advanced">Experienced</option></select></div><div><label for="energy">Energy right now</label><select id="energy"><option value="medium">Moderate</option><option value="low">Low / recovering</option><option value="high">High</option></select></div></div>
+      <label for="pace">Daily focus commitment</label><select id="pace"><option value="gentle">Gentle — approx. 10 mins</option><option value="steady" selected>Steady — approx. 25 mins</option><option value="focused">Focused — approx. 45 mins</option></select>
+      <button class="button primary full" type="submit" id="buildBtn">Create my 30-day plan <span aria-hidden="true">↗</span></button><p id="formError" role="alert" class="form-error" hidden></p></form>
+      <div class="aside-note"><span aria-hidden="true">✦</span><p>“Millionaire” describes the ambition to develop valuable habits. This tool cannot predict earnings or guarantee financial outcomes.</p></div>
+      <div class="aside-actions"><button id="exportText" class="button subtle" type="button" disabled>Export report (.txt)</button><button id="exportJson" class="button subtle" type="button" disabled>Back up plan (.json)</button><label class="button subtle import-label" for="importFile">Import backup<input type="file" id="importFile" accept=".json,application/json" hidden></label><button id="clearPlan" class="button danger" type="button" disabled>Delete saved plan</button></div>
+    </aside>
+    <section class="panel progress-panel" aria-labelledby="progress-title"><div class="panel-header progress-title"><span class="small-step">02</span><div><h3 id="progress-title">Your daily momentum</h3><p id="planSubtitle">Build your first plan to unlock tracking.</p></div></div>
+      <div id="emptyState" class="empty-state"><div class="empty-icon">◎</div><h4>Your journey starts here</h4><p>Enter a goal and create your routine. Your progress charts will update from real completed tasks.</p><span>30 DAYS • 3 HABITS • 1 GOAL</span></div>
+      <div id="tracker" hidden>
+        <div class="stats"><div class="stat"><span>PLAN COMPLETE</span><strong id="percent">0%</strong><small id="tasksDone">0 of 90 tasks</small></div><div class="stat"><span>FULL DAYS</span><strong id="daysDone">0<span class="denominator">/30</span></strong><small>All 3 habits complete</small></div><div class="stat"><span>CURRENT STREAK</span><strong id="streak">0<span class="denominator"> days</span></strong><small>Consecutive full days</small></div></div>
+        <div class="track-header"><h4>30-day calendar</h4><span id="dayCaption">Select a day</span></div><div id="calendar" class="day-grid" role="group" aria-label="Select a day from your 30-day plan"></div><div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+        <div class="daily-panel"><div class="daily-title"><div><p class="overline" id="phaseLabel">FOUNDATION</p><h4 id="dayTitle">Day 1</h4><p id="dailyFocus"></p></div><span class="day-status" id="dayStatus">READY</span></div><div id="dailyTasks" class="task-list"></div><label for="dayNote">Reflection note (optional)</label><textarea id="dayNote" rows="2" maxlength="600" placeholder="What worked? What's the next small step?"></textarea><p class="field-help" id="noteHelp">Notes save on this device.</p></div>
+        <div class="chart-area"><div class="track-header"><h4>Weekly consistency</h4><span>Fully completed days</span></div><div id="weekBars" class="week-bars" role="img" aria-label="Weekly complete days"></div></div>
+      </div>
+    </section>
+  </div>
+  <p class="status-message" id="statusMessage" aria-live="polite"></p>
+</section>
+<section id="how" class="how-section"><div class="section-heading"><div><p class="overline">02 / THE PROCESS</p><h2>Progress, without pressure</h2><p>A sustainable routine is more useful than a dramatic promise.</p></div></div><div class="steps"><article><span>01</span><h3>Choose a goal</h3><p>Tell the planner what you're working toward and how much time you can reasonably commit.</p></article><article><span>02</span><h3>Take daily action</h3><p>Follow a focus block, practise something useful and write a short reflection.</p></article><article><span>03</span><h3>Review what happened</h3><p>Check real completion data, adjust your pace and export your plan whenever you like.</p></article></div></section>
+<section class="integrity"><span>◈</span><div><h2>Built for real life</h2><p>This is a habit planner, not a wealth predictor, medical assessment or financial-advice service. The progress indicators only measure tasks you mark complete. Records remain in browser storage until you delete them; on shared devices, other browser users may be able to access them.</p></div></section>
+</main>
+<footer id="creator"><div><strong>Millionaire Habit Builder <span>Ω∞</span></strong><p>Original concept, creator, designer and developer: <a href="https://corneliusaurelius.com/">Cornelius Aurelius</a></p><p>Original reference: <a href="https://zenodo.org/records/17362534" target="_blank" rel="noopener noreferrer">The Peace License</a></p></div><span class="footer-right">PROGRESS IS PRACTICE.</span></footer>
+</div>
+</body></html>
